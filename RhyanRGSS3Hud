@@ -4,14 +4,14 @@ Termos de Uso:
 
 - Não comercial: Me credite.
 - Comercial = Me mande uma mensagem privada dizendo que vai usar. Também, se for
-usar comercialmente, não é obrigatório, mas divulgue meu github e/ou pastebin:
+usar comercialmente, não é obrigatório, mas divulgue meu github/pastebin:
 
 - Pastebin: https://pastebin.com/u/Fashy.
 - Github: https://github.com/Rhyan-crypto.
 
 Nome: Rhyan RGSS3 Hud
 Versão: 1.0
-Descrição: Mostre uma HUD com: TP, HP, MP.
+Descrição: Mostre uma HUD com: TP, HP, NICK, MP.
 
 #================== Instruções ========================#
 
@@ -29,7 +29,12 @@ Para alterar a opacidade, chame uma script call (event) com o seguinte código:
 
 Sem as aspas, claro.
 
-Para alterar a 
+Para desativar a Hud:
+
+"Main_RHud_Config::Hud = true/false"
+
+false: Desativar;
+true = Ativar.
 
 #======================================================#
 
@@ -43,18 +48,32 @@ module Main_RHud_Config
   
   Opacidade = 255
   
+  Hud = true #<- Constante para ativar/desativar a hud.
 end
 
 
 class Scene_Map < Scene_Base
   
+  include Main_RHud_Config 
+  
   alias :rhyan_hud_menu_start :start
+  alias :rhyan_hud_menu_update :update
   
   def start
     
     rhyan_hud_menu_start
     
     @window_hud = Window_Hud.new(0, 0, window_width, window_height) #<- Desenhando a janela da hud. (x, y, width, height)   
+  end
+  
+  def update
+    rhyan_hud_menu_update
+    
+    if Hud != true
+      @window_hud.close
+    elsif Hud == true
+      @window_hud.open
+    end
   end
   
   def window_width
@@ -65,6 +84,9 @@ class Scene_Map < Scene_Base
     return 120 #<- Altura da janela.
   end
   
+  def terminate
+    @window_hud.dispose
+  end
 end
 
 class Window_Hud < Window_Base
