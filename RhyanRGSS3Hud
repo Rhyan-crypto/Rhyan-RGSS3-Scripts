@@ -1,0 +1,99 @@
+=begin
+
+Termos de Uso:
+
+- Não comercial: Me credite.
+- Comercial = Me mande uma mensagem privada dizendo que vai usar. Também, se for
+usar comercialmente, não é obrigatório, mas divulgue meu github e/ou pastebin:
+
+- Pastebin: https://pastebin.com/u/Fashy.
+- Github: https://github.com/Rhyan-crypto.
+
+Nome: Rhyan RGSS3 Hud
+Versão: 1.0
+Descrição: Mostre uma HUD com: TP, HP, NICK, MP.
+
+#================== Instruções ========================#
+
+Para alterar o ícone (HP || MP), chame uma Script Call (evento, com o seguinte código:
+
+"Main_RHud_Config::Icone_HP = index_do_seu_icone" para alterar o ícone de HP. Ou, para alterar o ícone de MP:
+"Main_RHud_Config::Icone_MP = index_do_seu_icone" para alterar o ícone de MP. Ou, para alterar o ícone de TP ('-'):
+"Main_RHud_Config::Icone_TP = index_do_seu_icone" para alterar o ícone de TP. 
+
+Sem as aspas.
+
+Para alterar a opacidade, chame uma script call (event) com o seguinte código:
+
+"Main_RHud_Config::Opacidade = sua_opacidade"
+
+Sem as aspas, claro.
+
+Para alterar a 
+
+#======================================================#
+
+
+=end
+
+module Main_RHud_Config
+  Icone_HP = 122 #<- Ícone HP;
+  Icone_MP = 353 #<- Ícone MP.
+  Icone_TP = 147
+  
+  Opacidade = 255
+  
+end
+
+
+class Scene_Map < Scene_Base
+  
+  alias :rhyan_hud_menu_start :start
+  
+  def start
+    
+    rhyan_hud_menu_start
+    
+    @window_hud = Window_Hud.new(0, 0, window_width, window_height) #<- Desenhando a janela da hud. (x, y, width, height)   
+  end
+  
+  def window_width
+    return 200 #<- Largura da janela.
+  end
+  
+  def window_height 
+    return 120 #<- Altura da janela.
+  end
+  
+end
+
+class Window_Hud < Window_Base
+  
+  include Main_RHud_Config #<- Incluindo módulo de Configuração Principal.
+  
+  def initialize(x, y, width, height)
+    super
+    refresh
+    
+    self.opacity = Opacidade #<- Opacidade 
+    
+  end
+
+  def update
+    super
+    contents.clear #<- Limpando conteúdo da janela.
+    refresh 
+  end
+  
+  def refresh
+    #= Desenhando status =#
+      draw_actor_hp($game_party.members[0], 26, 6) #<- Desenhando o HP;
+      draw_actor_mp($game_party.members[0], 26, 34) #<- Desenhando o MP;
+      draw_actor_tp($game_party.members[0], 26, 62) #<- Desenhando o TP;
+    #= Desenhando ícones =#
+      draw_icon(Icone_HP, 0, 2) # Desenhando ícone HP.
+      draw_icon(Icone_MP, 0, 30) # Desenhando ícone MP.
+      draw_icon(Icone_TP, 0, 58) # Desenhando ícone TP.
+    #= FIM =-
+  end
+end
