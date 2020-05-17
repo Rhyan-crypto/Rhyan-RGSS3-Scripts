@@ -1,0 +1,72 @@
+#/==============================================================================\
+# Rhyan - Ringo Window Show Variable     
+#
+# -
+# Autor: Davi M, como Rhyan.
+# Versão: 1.0
+# Começo: 17/05/2020
+# Termos de uso: 
+#
+# 1... Você pode usar como quiser, mas dando créditos a: "Ringo Rhyan".
+# 2... O uso é para NÂO-COMERCIAL, caso queira utilizar, me contate por mensagem
+# privada.
+# 3... Válido para não-comercial e comercial: Deixe pelo menos um dos links:
+#
+# 1>https://github.com/Rhyan-crypto/Rhyan-RGSS3-Scripts 
+# 2>https://pastebin.com/u/Fashy
+# 3>https://centrorpg.com/index.php?action=profile;area=forumprofile
+#
+# Lembrando que você só precisa deixar apenas UM deles.
+#\==============================================================================/
+
+module Ringo_Config
+  Variable = 1 #<- Altere pelo ID da sua variável.
+  Opacidade = 100 #<- Altere pela sua opacidade (0 - 255).
+end
+
+#===========================================================================#
+# Ringo | Scene Map | Essa scene vai ser responsável por carregar a window.
+#===========================================================================#
+
+class Scene_Map < Scene_Base
+  
+  include Ringo_Config
+  
+  alias :ringo_start :start
+  
+  def start
+    ringo_start
+    create_code_window
+    main_configs
+  end
+  
+  def main_configs
+    @ringo_show_variable.opacity = Opacidade
+  end
+  
+  def create_code_window
+    @ringo_show_variable = Ringo_Show_Variable.new(Variable)
+  end
+end
+
+#===========================================================================#
+# Ringo | Ringo_Show_Variable | Essa é a window (janela que mostra a variável).
+#===========================================================================#
+
+class Ringo_Show_Variable < Window_Base
+  def initialize(var)
+    super(0, 0, 150, 50) #x, y, width, height
+    refresh
+    @var = var
+  end
+  
+  def update
+    super
+    refresh
+  end
+  
+  def refresh
+    contents.clear
+    draw_text_ex(0, 0, $game_variables[@var.to_i]) #<- Desenhando o valor da variável.
+  end
+end
